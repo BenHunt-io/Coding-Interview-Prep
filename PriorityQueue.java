@@ -1,0 +1,12 @@
+class AbstractPriorityQueue<K,V> {
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+}

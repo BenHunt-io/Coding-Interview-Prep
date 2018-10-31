@@ -5,14 +5,18 @@ class BinarySearchTree{
 	private Node root;
 
 	public static class Node{
+		
 		public Node leftNode;
 		public Node rightNode;
+		
 		public int key;
 		public String value;
+		public int count;
 		
-		public Node(int key, String value){
+		public Node(int key, String value, int count){
 			this.key = key;
 			this.value = value;
+			this.count = count;
 		}
 	}
 	
@@ -37,33 +41,45 @@ class BinarySearchTree{
 	}
 	
 	// p starts at root
-	private void put(Node newNode, Node p){
+	private Node put(int key, String value, Node p){
 		
 		if(p == null){
-			root = newNode;
-			return;
+			return new Node(key,value,1);
 		}
 		
-		p = search(newNode.key, root);
+		// Can search and insert but also do it this way
+		// Go down and up the tree
+		// p = search(key, p);
 		
-		if(p.key == newNode.key){
-			p.value = newNode.value;
+		if(p.key == key){
+			p.value = value;
 		}
-		else if(newNode.key < p.key){
-			p.leftNode = newNode;
+		else if(key < p.key){
+			p.leftNode = put(key,value,p.leftNode);
+			
 		}
-		else if(newNode.key > p.key){
-			p.rightNode = newNode;
+		else if(key > p.key){
+			p.rightNode = put(key,value,p.rightNode);
 		}
 		
+		// Happens on the way up.
+		int left = p.leftNode == null ? 0 : p.leftNode.count;
+		int right = p.rightNode == null ? 0 : p.rightNode.count;
+		p.count = left + right + 1; // Need to count the node itself to calculate total nodes in the subtree
 		
+		return p;
+
 	}
 	
 	public Node search(int key){ return search(key,root);}
 
 	
-	public void put(Node newNode){
-		put(newNode, root);
+	public void put(int key, String value){
+		root = put(key,value, root);
+	}
+	
+	public void deleteNode(Node p){
+		
 	}
 	
 	// In BST this prints out in-order
@@ -73,9 +89,19 @@ class BinarySearchTree{
 			return;
 		}
 		inOrderTraversal(p.leftNode);
-		System.out.println(p.key + " " + p.value);
+		System.out.println(p.key + " " + p.value + " " + p.count);
 		inOrderTraversal(p.rightNode);
 		
+	}
+	
+	public void postOrderTraversal(Node p){
+		
+		if(p == null){
+			return;
+		}
+		postOrderTraversal(p.leftNode);
+		postOrderTraversal(p.rightNode);
+		System.out.println(p.key + " " + p.value);
 	}
 	
 	public void inOrderTraversal(){ inOrderTraversal(root); }
@@ -83,18 +109,19 @@ class BinarySearchTree{
 	public static void main(String[] args){
 	
 		BinarySearchTree binarySearchTree = new BinarySearchTree();
-		binarySearchTree.put(new Node(50, "Bill"));
-		binarySearchTree.put(new Node(22, "Lax"));
-		binarySearchTree.put(new Node(33, "Jill"));
-		binarySearchTree.put(new Node(5, "Ben"));
-		binarySearchTree.put(new Node(8, "Tom"));
-		binarySearchTree.put(new Node(33, "Jill"));
-		binarySearchTree.put(new Node(5, "Ben"));
-		binarySearchTree.put(new Node(8, "Tom"));
-		binarySearchTree.put(new Node(25, "Jill"));
-		binarySearchTree.put(new Node(51, "Ben"));
-		binarySearchTree.put(new Node(82, "Tom"));
+		binarySearchTree.put(50, "Bill");
+		binarySearchTree.put(22, "Lax");
+		binarySearchTree.put(33, "Jill");
+		binarySearchTree.put(5, "Ben");
+		binarySearchTree.put(8, "Tom");
+		binarySearchTree.put(33, "Jill");
+		binarySearchTree.put(5, "Ben");
+		binarySearchTree.put(8, "Tom");
+		binarySearchTree.put(25, "Jill");
+		binarySearchTree.put(51, "Ben");
+		binarySearchTree.put(82, "Tom");
 		binarySearchTree.inOrderTraversal();
+		
 	}
 	
 
